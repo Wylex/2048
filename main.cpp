@@ -23,17 +23,32 @@ bool haveWin(const array4& state) {
 		for(int a(0); a < 4; a++) {
 			if(state[i][a] == 10)
 				return true;
-		}	
+		}
 	}
 
 	return false;
+}
+
+bool move(int& fixed, int& moving)
+{
+	if(fixed == moving && fixed != -1) {
+		fixed++;
+		moving = -1;
+		return true;
+	}
+	else if(fixed == -1 && moving != -1) {
+		fixed = moving;
+		moving = -1;
+		return true;
+	}
+	else
+		return false;
 }
 
 int main() {
 	std::srand(std::time(0));
 
 	array4 state = { {{-1,-1,-1,-1}, {-1,-1,-1,-1}, {-1,-1,-1,-1}, {-1,-1,-1,-1}} };
-	draw(state);
 
 	bool lose = false;
 
@@ -57,7 +72,7 @@ int main() {
 					break;
 			}
 
-			if(row == -1) 
+			if(row == -1)
 				break;
 		} while(coincidences < rdm);
 
@@ -66,13 +81,31 @@ int main() {
 			break;
 		}
 
-		rdm = std::rand()%1;
+		rdm = std::rand()%2;
 		state[row][column] = rdm;
 
-		int m;
-		std::cin >> m;
-
 		draw(state);
+
+		char shifting;
+		std::cin >> shifting;
+
+		bool moved = false;
+		switch(shifting) {
+			case 'h':
+				for(int i(0); i < 4; i++) {
+					for(int a(1); a < 4; a++) {
+						if(move(state[i][a-1], state[i][a]))
+							moved = true;
+					}
+				}
+				break;
+			case 'j':
+				break;
+			case 'k':
+				break;
+			case 'l':
+				break;
+		}
 	}
 
 	if(lose)
