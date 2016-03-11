@@ -49,6 +49,8 @@ int main() {
 	std::srand(std::time(0));
 
 	array4 state = { {{-1,-1,-1,-1}, {-1,-1,-1,-1}, {-1,-1,-1,-1}, {-1,-1,-1,-1}} };
+	state[std::rand()%4][std::rand()%4] = std::rand()%2;
+	
 
 	bool lose = false;
 
@@ -76,36 +78,119 @@ int main() {
 				break;
 		} while(coincidences < rdm);
 
-		if(row == -1) {
-			lose = true;
-			break;
-		}
-
 		rdm = std::rand()%2;
 		state[row][column] = rdm;
 
 		draw(state);
-
-		char shifting;
-		std::cin >> shifting;
+		std::cout << std::endl;
 
 		bool moved = false;
-		switch(shifting) {
-			case 'h':
-				for(int i(0); i < 4; i++) {
-					for(int a(1); a < 4; a++) {
-						if(move(state[i][a-1], state[i][a]))
-							moved = true;
+		char shifting;
+		do {
+			std::cin >> shifting;
+
+			switch(shifting) {
+				case 'a':
+					//Remove espaces
+					for(int i(0); i < 4; i++) {
+						for(int a(1); a < 4; a++) {
+							if(state[i][a] != -1 and state[i][a-1] == -1) {
+								moved = true;
+								state[i][a-1] = state[i][a];
+								state[i][a] = -1;
+								if(a>=2)
+									a-=2;
+							}	
+						}
 					}
-				}
-				break;
-			case 'j':
-				break;
-			case 'k':
-				break;
-			case 'l':
-				break;
-		}
+
+					//Merge numbers
+					for(int i(0); i < 4; i++) {
+						for(int a(1); a < 4; a++) {
+							if(move(state[i][a-1], state[i][a]))
+								moved = true;
+						}
+					}
+					std::cout << "<--" << std::endl;
+					break;
+				case 's':
+					//Remove espaces
+					for(int i(2); i >= 0; i--) {
+						for(int a(0); a < 4; a++) {
+							if(state[i][a] != -1 and state[i+1][a] == -1) {
+								moved = true;
+								state[i+1][a] = state[i][a];
+								state[i][a] = -1;
+								if(i<=1)
+									i+=2;
+								break;
+							}	
+						}
+					}
+
+					//Merge numbers
+					for(int i(2); i >= 0; i--) {
+						for(int a(0); a < 4; a++) {
+							if(move(state[i+1][a], state[i][a]))
+								moved = true;
+						}
+					}
+					std::cout << " |" << std::endl;
+					std::cout << " v" << std::endl;
+					break;
+				case 'w':
+					//Remove espaces
+					for(int i(1); i < 4; i++) {
+						for(int a(0); a < 4; a++) {
+							if(state[i][a] != -1 and state[i-1][a] == -1) {
+								moved = true;
+								state[i-1][a] = state[i][a];
+								state[i][a] = -1;
+								if(i>=2)
+									i-=2;
+								break;
+							}	
+						}
+					}
+
+					//Merge numbers
+					for(int i(1); i < 4; i++) {
+						for(int a(0); a < 4; a++) {
+							if(move(state[i-1][a], state[i][a]))
+								moved = true;
+						}
+					}
+					std::cout << " ^" << std::endl;
+					std::cout << " |" << std::endl;
+					break;
+				case 'd':
+					//Remove espaces
+					for(int i(0); i < 4; i++) {
+						for(int a(2); a >= 0; a--) {
+							if(state[i][a] != -1 and state[i][a+1] == -1) {
+								moved = true;
+								state[i][a+1] = state[i][a];
+								state[i][a] = -1;
+								if(a<=1)
+									a+=2;
+							}	
+						}
+					}
+
+					//Merge numbers
+					for(int i(0); i < 4; i++) {
+						for(int a(2); a >= 0; a--) {
+							if(move(state[i][a+1], state[i][a]))
+								moved = true;
+						}
+					}
+					std::cout << "-->" << std::endl;
+					break;
+			}
+		} while(moved == false);
+
+		for(int i(0); i < 50; i++)
+			std::cout << std::endl;
 	}
 
 	if(lose)
