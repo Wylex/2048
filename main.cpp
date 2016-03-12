@@ -29,20 +29,42 @@ bool haveWin(const array4& state) {
 	return false;
 }
 
-bool move(int& fixed, int& moving)
-{
-	if(fixed == moving && fixed != -1) {
-		fixed++;
-		moving = -1;
-		return true;
+bool haveLose(const array4& state) {
+	bool lose = true;
+
+	for(int i(0); i < 4; i++) {
+		for(int a(0); a < 3; a++) {
+			if(state[i][a] == state[i][a+1])
+				lose = false;
+		}
 	}
-	else if(fixed == -1 && moving != -1) {
+
+	for(int i(0); i < 3; i++) {
+		for(int a(0); a < 4; a++) {
+			if(state[i][a] == state[i+1][a])
+				lose = false;
+		}
+	}
+
+	return lose;
+}
+
+int move(int& fixed, int& moving, bool& moved)
+{
+	if(fixed == -1 && moving != -1) {
+		moved = true;
 		fixed = moving;
 		moving = -1;
-		return true;
+		return 1;
+	}
+	else if(fixed == moving && fixed != -1) {
+		moved = true;
+		fixed++;
+		moving = -1;
+		return 2;
 	}
 	else
-		return false;
+		return 0;
 }
 
 int main() {
@@ -51,10 +73,7 @@ int main() {
 	array4 state = { {{-1,-1,-1,-1}, {-1,-1,-1,-1}, {-1,-1,-1,-1}, {-1,-1,-1,-1}} };
 	state[std::rand()%4][std::rand()%4] = std::rand()%2;
 	
-
-	bool lose = false;
-
-	while(!haveWin(state))
+	while(!haveWin(state) or haveLose(state))
 	{
 		//Random move
 		int rdm = std::rand()%10 + 1;
@@ -91,109 +110,60 @@ int main() {
 
 			switch(shifting) {
 				case 'a':
-					//Remove espaces
 					for(int i(0); i < 4; i++) {
 						for(int a(1); a < 4; a++) {
-							if(state[i][a] != -1 and state[i][a-1] == -1) {
-								moved = true;
-								state[i][a-1] = state[i][a];
-								state[i][a] = -1;
+							if(move(state[i][a-1], state[i][a], moved) == 1) {
 								if(a>=2)
 									a-=2;
-							}	
-						}
-					}
-
-					//Merge numbers
-					for(int i(0); i < 4; i++) {
-						for(int a(1); a < 4; a++) {
-							if(move(state[i][a-1], state[i][a]))
-								moved = true;
+							}
 						}
 					}
 					std::cout << "<--" << std::endl;
 					break;
 				case 's':
-					//Remove espaces
 					for(int i(2); i >= 0; i--) {
 						for(int a(0); a < 4; a++) {
-							if(state[i][a] != -1 and state[i+1][a] == -1) {
-								moved = true;
-								state[i+1][a] = state[i][a];
-								state[i][a] = -1;
+							if(move(state[i+1][a], state[i][a], moved) == 1) {
 								if(i<=1)
 									i+=2;
-								break;
-							}	
-						}
-					}
-
-					//Merge numbers
-					for(int i(2); i >= 0; i--) {
-						for(int a(0); a < 4; a++) {
-							if(move(state[i+1][a], state[i][a]))
-								moved = true;
+							}
 						}
 					}
 					std::cout << " |" << std::endl;
 					std::cout << " v" << std::endl;
 					break;
 				case 'w':
-					//Remove espaces
 					for(int i(1); i < 4; i++) {
 						for(int a(0); a < 4; a++) {
-							if(state[i][a] != -1 and state[i-1][a] == -1) {
-								moved = true;
-								state[i-1][a] = state[i][a];
-								state[i][a] = -1;
+							if(move(state[i-1][a], state[i][a], moved) == 1) {
 								if(i>=2)
 									i-=2;
-								break;
-							}	
-						}
-					}
-
-					//Merge numbers
-					for(int i(1); i < 4; i++) {
-						for(int a(0); a < 4; a++) {
-							if(move(state[i-1][a], state[i][a]))
-								moved = true;
+							}
 						}
 					}
 					std::cout << " ^" << std::endl;
 					std::cout << " |" << std::endl;
 					break;
 				case 'd':
-					//Remove espaces
 					for(int i(0); i < 4; i++) {
 						for(int a(2); a >= 0; a--) {
-							if(state[i][a] != -1 and state[i][a+1] == -1) {
-								moved = true;
-								state[i][a+1] = state[i][a];
-								state[i][a] = -1;
+							if(move(state[i][a+1], state[i][a], moved) == 1) {
 								if(a<=1)
 									a+=2;
-							}	
-						}
-					}
-
-					//Merge numbers
-					for(int i(0); i < 4; i++) {
-						for(int a(2); a >= 0; a--) {
-							if(move(state[i][a+1], state[i][a]))
-								moved = true;
+							}
 						}
 					}
 					std::cout << "-->" << std::endl;
 					break;
 			}
-		} while(moved == false);
+
+		} while(moved == false or haveLose(state));
 
 		for(int i(0); i < 50; i++)
 			std::cout << std::endl;
 	}
 
-	if(lose)
+	if(haveLose(state))
 		std::cout << "You lose!" << std::endl;
 	else
 		std::cout << "YOU WIN" << std::endl;
