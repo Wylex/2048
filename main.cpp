@@ -4,6 +4,7 @@
 #include <ctime>
 #include <vector>
 #include <algorithm>
+#include <string>
 
 typedef std::array<std::array<int, 4>, 4 > array4;
 
@@ -107,6 +108,7 @@ int main() {
 
 		bool moved = false;
 		char shifting;
+		std::string direction;
 		do {
 			std::cin >> shifting;
 
@@ -125,7 +127,7 @@ int main() {
 							}
 						}
 					}
-					std::cout << "<--" << std::endl;
+					direction = "<--";
 					break;
 				case 's':
 					for(int a(0); a < 4; a++) {
@@ -142,8 +144,7 @@ int main() {
 						}
 					}
 
-					std::cout << " |" << std::endl;
-					std::cout << " v" << std::endl;
+					direction = " |\n v";
 					break;
 				case 'w':
 					for(int a(0); a < 4; a++) {
@@ -160,8 +161,7 @@ int main() {
 						}
 					}
 
-					std::cout << " ^" << std::endl;
-					std::cout << " |" << std::endl;
+					direction = " ^\n |";
 					break;
 				case 'd':
 					for(int i(0); i < 4; i++) {
@@ -173,13 +173,12 @@ int main() {
 							}
 							else if(std::find(forbiddenMerge.begin(), forbiddenMerge.end(), a+2) == forbiddenMerge.end() &&
 							moveResult == 1) {
-								std::cout << "i: " << i << " a: " << a << std::endl;
 								if(a<=1)
 									a+=2;
 							}
 						}
 					}
-					std::cout << "-->" << std::endl;
+					direction = "-->";
 					break;
 			}
 
@@ -187,6 +186,8 @@ int main() {
 
 		for(int i(0); i < 50; i++)
 			std::cout << std::endl;
+
+		std::cout << direction << std::endl;
 	}
 
 	if(haveLose(state))
