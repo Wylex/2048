@@ -2,6 +2,8 @@
 #include <array>
 #include <cstdlib>
 #include <ctime>
+#include <vector>
+#include <algorithm>
 
 typedef std::array<std::array<int, 4>, 4 > array4;
 
@@ -70,8 +72,8 @@ int move(int& fixed, int& moving, bool& moved)
 int main() {
 	std::srand(std::time(0));
 
-	array4 state = { {{-1,-1,-1,-1}, {-1,-1,-1,-1}, {-1,-1,-1,-1}, {-1,-1,-1,-1}} };
-	state[std::rand()%4][std::rand()%4] = std::rand()%2;
+	array4 state = { {{1,1,1,1}, {-1,-1,-1,-1}, {-1,-1,-1,-1}, {-1,-1,-1,-1}} };
+	//state[std::rand()%4][std::rand()%4] = std::rand()%2;
 	
 	while(!haveWin(state) or haveLose(state))
 	{
@@ -111,8 +113,15 @@ int main() {
 			switch(shifting) {
 				case 'a':
 					for(int i(0); i < 4; i++) {
+						std::vector<int> forbiddenMerge;
 						for(int a(1); a < 4; a++) {
-							if(move(state[i][a-1], state[i][a], moved) == 1) {
+							int moveResult = move(state[i][a-1], state[i][a], moved);
+							if(moveResult == 2) {
+								std::cout << "Forbidden column " << a-1 << std::endl;
+								forbiddenMerge.push_back(a-1);
+							}
+							else if(std::find(forbiddenMerge.begin(), forbiddenMerge.end(), a-2) == forbiddenMerge.end() && 
+							moveResult == 1) {
 								if(a>=2)
 									a-=2;
 							}
