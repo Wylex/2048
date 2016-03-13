@@ -72,9 +72,9 @@ int move(int& fixed, int& moving, bool& moved)
 int main() {
 	std::srand(std::time(0));
 
-	array4 state = { {{1,1,1,1}, {-1,-1,-1,-1}, {-1,-1,-1,-1}, {-1,-1,-1,-1}} };
-	//state[std::rand()%4][std::rand()%4] = std::rand()%2;
-	
+	array4 state = { {{-1,-1,-1,-1}, {-1,-1,-1,-1}, {-1,-1,-1,-1}, {-1,-1,-1,-1}} };
+	state[std::rand()%4][std::rand()%4] = std::rand()%2;
+
 	while(!haveWin(state) or haveLose(state))
 	{
 		//Random move
@@ -116,11 +116,9 @@ int main() {
 						std::vector<int> forbiddenMerge;
 						for(int a(1); a < 4; a++) {
 							int moveResult = move(state[i][a-1], state[i][a], moved);
-							if(moveResult == 2) {
-								std::cout << "Forbidden column " << a-1 << std::endl;
+							if(moveResult == 2)
 								forbiddenMerge.push_back(a-1);
-							}
-							else if(std::find(forbiddenMerge.begin(), forbiddenMerge.end(), a-2) == forbiddenMerge.end() && 
+							else if(std::find(forbiddenMerge.begin(), forbiddenMerge.end(), a-2) == forbiddenMerge.end() &&
 							moveResult == 1) {
 								if(a>=2)
 									a-=2;
@@ -130,33 +128,52 @@ int main() {
 					std::cout << "<--" << std::endl;
 					break;
 				case 's':
-					for(int i(2); i >= 0; i--) {
-						for(int a(0); a < 4; a++) {
-							if(move(state[i+1][a], state[i][a], moved) == 1) {
+					for(int a(0); a < 4; a++) {
+						std::vector<int> forbiddenMerge;
+						for(int i(2); i >= 0; i--) {
+							int moveResult = move(state[i+1][a], state[i][a], moved);
+							if(moveResult == 2)
+								forbiddenMerge.push_back(i+1);
+							else if(std::find(forbiddenMerge.begin(), forbiddenMerge.end(), i+2) == forbiddenMerge.end() &&
+							moveResult == 1) {
 								if(i<=1)
 									i+=2;
 							}
 						}
 					}
+
 					std::cout << " |" << std::endl;
 					std::cout << " v" << std::endl;
 					break;
 				case 'w':
-					for(int i(1); i < 4; i++) {
-						for(int a(0); a < 4; a++) {
-							if(move(state[i-1][a], state[i][a], moved) == 1) {
+					for(int a(0); a < 4; a++) {
+						std::vector<int> forbiddenMerge;
+						for(int i(1); i < 4; i++) {
+							int moveResult = move(state[i-1][a], state[i][a], moved);
+							if(moveResult == 2)
+								forbiddenMerge.push_back(i-1);
+							else if(std::find(forbiddenMerge.begin(), forbiddenMerge.end(), i-2) == forbiddenMerge.end() &&
+							moveResult == 1) {
 								if(i>=2)
 									i-=2;
 							}
 						}
 					}
+
 					std::cout << " ^" << std::endl;
 					std::cout << " |" << std::endl;
 					break;
 				case 'd':
 					for(int i(0); i < 4; i++) {
+						std::vector<int> forbiddenMerge;
 						for(int a(2); a >= 0; a--) {
-							if(move(state[i][a+1], state[i][a], moved) == 1) {
+							int moveResult = move(state[i][a+1], state[i][a], moved);
+							if(moveResult == 2) {
+								forbiddenMerge.push_back(a+1);
+							}
+							else if(std::find(forbiddenMerge.begin(), forbiddenMerge.end(), a+2) == forbiddenMerge.end() &&
+							moveResult == 1) {
+								std::cout << "i: " << i << " a: " << a << std::endl;
 								if(a<=1)
 									a+=2;
 							}
