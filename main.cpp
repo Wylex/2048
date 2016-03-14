@@ -39,12 +39,15 @@ bool haveLose(const array4& state) {
 		for(int a(0); a < 3; a++) {
 			if(state[i][a] == state[i][a+1])
 				lose = false;
+			else if(state[a][i] == state[a+1][i])
+				lose = false;
+			
 		}
 	}
 
-	for(int i(0); i < 3; i++) {
+	for(int i(0); i < 4; i++) {
 		for(int a(0); a < 4; a++) {
-			if(state[i][a] == state[i+1][a])
+			if(state[i][a] == -1)
 				lose = false;
 		}
 	}
@@ -76,7 +79,7 @@ int main() {
 	array4 state = { {{-1,-1,-1,-1}, {-1,-1,-1,-1}, {-1,-1,-1,-1}, {-1,-1,-1,-1}} };
 	state[std::rand()%4][std::rand()%4] = std::rand()%2;
 
-	while(!haveWin(state) or haveLose(state))
+	while(!haveWin(state) and !haveLose(state))
 	{
 		//Random move
 		int rdm = std::rand()%10 + 1;
@@ -96,8 +99,8 @@ int main() {
 					break;
 			}
 
-			if(row == -1)
-				break;
+			/*if(row == -1)
+				break;*/
 		} while(coincidences < rdm);
 
 		rdm = std::rand()%2;
@@ -129,6 +132,7 @@ int main() {
 					}
 					direction = "<--";
 					break;
+
 				case 's':
 					for(int a(0); a < 4; a++) {
 						std::vector<int> forbiddenMerge;
@@ -143,9 +147,9 @@ int main() {
 							}
 						}
 					}
-
 					direction = " |\n v";
 					break;
+
 				case 'w':
 					for(int a(0); a < 4; a++) {
 						std::vector<int> forbiddenMerge;
@@ -160,9 +164,9 @@ int main() {
 							}
 						}
 					}
-
 					direction = " ^\n |";
 					break;
+
 				case 'd':
 					for(int i(0); i < 4; i++) {
 						std::vector<int> forbiddenMerge;
@@ -181,8 +185,8 @@ int main() {
 					direction = "-->";
 					break;
 			}
-
-		} while(moved == false or haveLose(state));
+			//std::cout << haveLose(state) << std::endl;
+		} while(!moved and !haveLose(state));
 
 		for(int i(0); i < 50; i++)
 			std::cout << std::endl;
