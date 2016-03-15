@@ -99,15 +99,14 @@ int main() {
 					break;
 			}
 
-			/*if(row == -1)
-				break;*/
 		} while(coincidences < rdm);
 
 		rdm = std::rand()%2;
 		state[row][column] = rdm;
 
 		draw(state);
-		std::cout << std::endl;
+		for(int i(0); i < 15; i++)
+			std::cout << std::endl;
 
 		bool moved = false;
 		char shifting;
@@ -185,7 +184,6 @@ int main() {
 					direction = "-->";
 					break;
 			}
-			//std::cout << haveLose(state) << std::endl;
 		} while(!moved and !haveLose(state));
 
 		for(int i(0); i < 50; i++)
