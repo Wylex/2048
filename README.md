@@ -1,16 +1,16 @@
 # 2048
 
 2048 game-like where:
-> 2 -> 0
- 4 -> 1
- 8 -> 2
- 16 -> 3
- 32 -> 4
- 64 -> 5
- 128 -> 6
- 256 -> 7
- 512 -> 8
- 1024 -> 9
+> 2 -> 0<br />
+ 4 -> 1<br />
+ 8 -> 2<br />
+ 16 -> 3<br />
+ 32 -> 4<br />
+ 64 -> 5<br />
+ 128 -> 6<br />
+ 256 -> 7<br />
+ 512 -> 8<br />
+ 1024 -> 9<br />
  2048 -> 10
 
 The merge of two equal squares means the number will be augmented by one.
